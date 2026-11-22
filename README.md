@@ -1,141 +1,346 @@
-# ⚙️ MachineGuard AI
 
+# MachineGuard AI
 ### Intelligent CNC Machine Failure Prediction and Maintenance
 
-**An interactive, reproducible student ML application** for estimating failure risk from industrial machining process measurements. Built with **Streamlit + scikit-learn** and packaged with a **Windows one-click launcher**.
+MachineGuard AI is a local machine-learning application that evaluates industrial machining measurements and estimates whether an operating record is associated with a machine-failure label. It combines supervised classification with an interactive dashboard for individual inspections, batch analysis, and model evaluation.
 
-> **Data truth:** This ZIP already contains a functional model trained on **independently simulated data**. On the first launch, it tries to download the real **UCI AI4I 2020 *synthetic* benchmark** and automatically retrains if downloading succeeds. If the official download fails or the PC is offline, the included demo runs without that download. These are not live CNC sensor readings, and risk estimates are **not** validated safety assessments.
+The application is built with **Python, scikit-learn, Streamlit, Pandas, and Plotly**. It runs locally and does not require a cloud account, API key, or GPU.
 
-## Quick start — Windows
+> **Dataset scope:** The included trained model uses a separately generated **synthetic machining dataset**, not readings collected from a working CNC machine. On first launch, the application attempts to obtain the public **UCI AI4I 2020 synthetic benchmark** and retrains if the download succeeds. Predictions are educational risk estimates, not certified equipment diagnostics.
 
-1. Install **Python 3.10–3.13** from https://www.python.org/downloads/ (enable **Add Python to PATH**); an internet connection is needed to install dependencies the first time.
-2. Extract the ZIP to a normal writable folder (for example `Documents\MachineGuard-AI`).
-3. Double-click **`START_PROJECT.bat`**. It creates `.venv`, installs the required Python packages, checks the dataset and model, and starts Streamlit.
-4. Your default browser opens to `http://localhost:8501`. Keep the command window open. Press **Ctrl+C** in that window to stop the local server.
+## Features
 
-First launch may take longer because packages install. After setup, package installation is skipped on later launches. If you have no internet on the first run, Python packages must already be installed in the virtual environment; the simulated dataset and pretrained model themselves do not require internet. No paid APIs, API keys, cloud database, Docker, or GPU are used.
+- **Dashboard:** Review dataset characteristics, failure-label distribution, operating measurements, and local inspection history.
+- **Single-machine inspection:** Enter measured operating values to obtain a predicted class, estimated failure score, and suggested inspection priority.
+- **Batch prediction:** Upload a CSV containing multiple observations, inspect the results, and export the predictions.
+- **Model insights:** Compare fitted algorithms, examine held-out performance metrics, review a confusion matrix, and explore feature importance.
+- **Reports:** Download a single-inspection HTML report or a batch-results CSV.
+- **Local execution:** Start the Streamlit interface with a Windows launcher or standard Python commands.
 
-## What problem does it solve?
+## Operating Inputs
 
-CNC machining operations involve thermal conditions, spindle speed, torque, and tool wear. Combinations of these variables can be associated with machinery failures. MachineGuard AI supports an operator's inspection workflow by scoring each observation and presenting **model-derived failure risk**, a **heuristic inspection priority**, and transparent model insights.
-
-### Features
-
-- **Overview:** dataset information, real training metrics, failure-label charts, spindle/torque scatterplot, local inspection history.
-- **Check a Machine:** interactive measurements, validation, result class, model score, heuristic review priority, local what-if sensitivity, and downloadable **HTML report**.
-- **Batch Inspection:** sample CSV template, up to 5,000 rows with strict schema and ranges, score predictions, histogram, downloadable results **CSV**.
-- **Model Intelligence:** comparison of three fitted algorithms on validation data, separate held-out test metrics and confusion matrix, validation permutation importance.
-- **Project Guide:** explanations, model workflow, provenance, and limitations.
-
-## Technology and pipeline
-
-| Layer | Technology |
+| Input | Description |
 |---|---|
-| Language | Python 3.10–3.13 |
-| Data manipulation | Pandas, NumPy |
-| Model training | scikit-learn (Logistic Regression, Decision Tree, Random Forest) |
-| Score calibration | 3-fold sigmoid calibration on training partition |
-| Modeling | train/validation/test stratified split 60%/20%/20% |
-| UI & charts | Streamlit, Plotly, custom CSS |
-| Model storage | Joblib |
-| History | Local CSV, excluded from Git |
-| Tests | Pytest |
+| Product type (`L`, `M`, `H`) | Quality variant of the manufactured product |
+| Air temperature (K) | Surrounding air temperature |
+| Process temperature (K) | Temperature of the machining process |
+| Rotational speed (rpm) | Rotational speed of the tool or spindle |
+| Torque (Nm) | Rotational torque |
+| Tool wear (min) | Accumulated cutting-tool use |
 
-The model uses **exactly six raw operating inputs** (1 categorical + 5 numeric). Feature engineering adds temperature difference, approximate spindle power, and wear × torque. Identifiers and failure-mode outcome columns are excluded to prevent leakage. Each preprocessing transform is fitted within cross-validated training pipelines. Model selection is by **validation average precision** and its score cutoff by **validation F1**; the test set is held out until final evaluation. Scores are calibrated estimates from training data, **not trustworthy real-world calibrated probabilities**.
+The classification target is **Machine failure** (0 = normal label, 1 = failure label).
 
-## Actual example input
+The pipeline additionally derives temperature difference, approximate spindle power, and a wear–torque interaction. Identifiers and failure-mode target columns are excluded from model inputs to avoid target leakage.
 
-```csv
-Type,Air temperature [K],Process temperature [K],Rotational speed [rpm],Torque [Nm],Tool wear [min]
-L,302.0,309.0,1300,42.0,170
-```
+## Technology Stack
 
-The result is calculated by the trained model and depends on the active dataset. No particular prediction is promised for an illustrative input.
+| Category | Technologies |
+|---|---|
+| Programming language | Python |
+| Machine learning | Scikit-learn |
+| Data processing | Pandas, NumPy |
+| User interface | Streamlit |
+| Data visualization | Plotly, Matplotlib |
+| Model serialization | Joblib |
+| Testing | Pytest |
+| Version control | Git, GitHub |
 
-## Dataset and actual model evaluation
+## Installation and Setup
 
-- Included: `data/machining_simulated.csv` — **independently generated simulation**, 10,000 rows; reproducible with `python -m src.simulation`.
-- Optional download: `data/ai4i2020_official.csv` — the UCI AI4I 2020 published **synthetic** benchmark, CC BY 4.0; automatic first-run attempt with `bootstrap.py`.
-- Details / attribution: [data/DATASET_ATTRIBUTION.md](data/DATASET_ATTRIBUTION.md).
-- The current saved model's training source is displayed prominently throughout the app and in `models/training_results.json`.
-- For genuinely measured scores, open `models/training_results.json` or the Model Intelligence page. **Never reuse the simulator's scores to claim UCI or industrial performance.**
+### Prerequisites
 
-## Manual commands (alternative to BAT)
+- Python 3.10–3.13
+- Windows, Linux, or macOS
+- Internet connection for initial dependency installation
+
+### Windows Quick Start
+
+1. Clone or download the repository.
+2. Extract the project if downloaded as a ZIP.
+3. Open the project folder.
+4. Double-click `START_PROJECT.bat`.
+5. Wait for the application to initialize.
+6. Open `http://localhost:8501` in your browser if it does not open automatically.
+
+The launcher prepares the Python environment, installs the required dependencies, initializes the dataset and trained model, and starts the Streamlit server.
+
+### Manual Installation
+
+Create a virtual environment:
 
 ```bash
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Linux/macOS: source .venv/bin/activate
+```
+
+Activate the virtual environment.
+
+Install dependencies:
+
+```bash
 python -m pip install -r requirements.txt
+```
+
+Initialize the dataset and model:
+
+```bash
 python bootstrap.py --prefer-official
+```
+
+Start the application:
+
+```bash
 python -m streamlit run app.py
 ```
 
-To retry fetching the original UCI dataset: `python bootstrap.py --refresh-official`. To retrain: `python bootstrap.py --force-train`. Run checks with `python -m pip install -r requirements-dev.txt` and `python -m pytest -q`.
+The application will be available at:
 
-## Folder structure
+`http://localhost:8501`
+
+## Machine Learning Workflow
+
+The system implements a supervised machine learning pipeline for binary machine-failure classification.
+
+### 1. Data Collection and Validation
+
+The project uses simulated machining measurements and supports the publicly available AI4I 2020 Predictive Maintenance Dataset.
+
+Data validation checks the required features, input types, missing values, and invalid operating measurements.
+
+### 2. Data Preprocessing
+
+Preprocessing includes:
+
+- Input validation
+- Handling missing values
+- Categorical feature encoding
+- Numerical feature scaling where appropriate
+- Feature engineering
+- Stratified data splitting
+
+### 3. Feature Engineering
+
+Additional features include:
+
+- Temperature difference
+- Approximate rotational power
+- Tool wear and torque interaction
+
+These features help represent relationships between different operating measurements.
+
+### 4. Model Training
+
+Three machine learning algorithms are compared:
+
+1. Logistic Regression
+2. Decision Tree Classifier
+3. Random Forest Classifier
+
+The dataset is divided into training, validation, and testing partitions using a 60:20:20 ratio.
+
+Model selection uses validation average precision. The classification threshold is selected using validation F1-score.
+
+### 5. Model Evaluation
+
+The trained models are evaluated using:
+
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- ROC-AUC
+- Average precision
+- Confusion matrix
+
+### Recorded Model Performance
+
+The included Random Forest model was trained on 10,000 simulated machining records, including 444 failure-labeled records.
+
+| Evaluation Metric | Result |
+|---|---|
+| Accuracy | 98.35% |
+| Precision | 91.18% |
+| Recall | 69.66% |
+| F1-score | 78.98% |
+| ROC-AUC | 96.47% |
+| Average Precision | 88.07% |
+
+**Note:** These evaluation results are obtained from the included simulated dataset. They do not represent verified performance on real CNC machines or the original UCI benchmark. Results may change when the model is retrained on another dataset.
+
+Detailed evaluation records are available in `models/training_results.json`.
+
+## Application Modules
+
+### Dashboard
+
+The dashboard provides an overview of operating measurements and machine-failure data.
+
+Features include:
+
+- Dataset statistics
+- Machine condition summaries
+- Failure distribution charts
+- Operating parameter visualizations
+- Prediction history
+
+### Machine Failure Prediction
+
+Users can manually enter CNC machining parameters and obtain:
+
+- Predicted machine condition
+- Estimated failure-risk score
+- Maintenance inspection priority
+- Contributing operating factors
+- Downloadable inspection report
+
+### Batch Prediction
+
+The batch prediction module supports uploading CSV files containing multiple machine observations.
+
+Features include:
+
+- CSV file validation
+- Multiple-record prediction
+- Prediction result tables
+- Downloadable CSV reports
+
+### Model Insights
+
+The model insights section provides information about:
+
+- Machine learning algorithms
+- Model comparison
+- Evaluation metrics
+- Confusion matrix
+- Feature importance
+- Model limitations
+
+## Dataset Information
+
+### Included Dataset
+
+The project includes a reproducibly generated synthetic machining dataset containing 10,000 observations.
+
+The dataset is generated through the project's simulation module.
+
+### Public Reference Dataset
+
+**Dataset:** AI4I 2020 Predictive Maintenance Dataset
+
+**Source:** UCI Machine Learning Repository
+
+**Dataset URL:** https://archive.ics.uci.edu/dataset/601/ai4i+2020+predictive+maintenance+dataset
+
+**DOI:** https://doi.org/10.24432/C5HS5C
+
+**License:** CC BY 4.0
+
+The public dataset contains simulated industrial machining conditions and machine-failure labels.
+
+No physical sensor integration or live CNC machine monitoring is included in the current implementation.
+
+## Project Structure
 
 ```text
 MachineGuard-AI/
-├── START_PROJECT.bat          # Windows launcher: click once
-├── launcher.py                # starts Streamlit / opens browser
-├── bootstrap.py               # optional UCI fetch; safe fallback; train if needed
-├── app.py                     # app shell and navigation
-├── requirements.txt
-├── requirements-dev.txt
-├── .streamlit/config.toml
-├── assets/styles.css
-├── data/
-│   ├── machining_simulated.csv   # disclosed independent demo dataset
-│   ├── sample_input.csv
-│   └── DATASET_ATTRIBUTION.md
-├── models/
-│   ├── trained_model.joblib      # pre-trained simulator model
-│   └── training_results.json    # authentic metrics for that model
-├── src/
-│   ├── constants.py, simulation.py, data.py
-│   ├── preprocessing.py, modeling.py, predict.py, history.py
-├── ui/
-│   ├── dashboard.py, single_prediction.py, batch_prediction.py
-│   ├── model_insights.py, about.py, common.py
-├── notebooks/exploratory_analysis.ipynb
-├── tests/                   # runnable pytest checks
-├── docs/                    # report, design, viva, GitHub, test log
-└── runtime/                 # locally generated inspection history; excluded from Git
+|
+|-- app.py
+|-- START_PROJECT.bat
+|-- bootstrap.py
+|-- launcher.py
+|-- requirements.txt
+|-- requirements-dev.txt
+|-- README.md
+|
+|-- assets/
+|-- data/
+|-- models/
+|-- src/
+|-- ui/
+|-- notebooks/
+|-- tests/
+|-- docs/
 ```
 
-## Inspect in a viva
+### Directory Description
 
-Open **Overview** → enter an example in **Check a Machine** → save HTML report → download sample CSV and upload it in **Batch Inspection** → open **Model Intelligence** → discuss class imbalance, data leakage, PR-AUC/recall, and simulator limitations.
+- `app.py` — Main Streamlit application
+- `START_PROJECT.bat` — Windows application launcher
+- `bootstrap.py` — Dataset and model initialization
+- `launcher.py` — Local application startup
+- `assets/` — User interface styling
+- `data/` — Datasets and sample inputs
+- `models/` — Trained models and evaluation records
+- `src/` — Machine learning pipeline and prediction logic
+- `ui/` — Streamlit interface components
+- `notebooks/` — Exploratory data analysis
+- `tests/` — Automated testing
+- `docs/` — Technical documentation
 
-## Limitations and safe use
+## Testing
 
-- Only a **machining-process fault/risk classification** demonstration. Not validated for particular CNC makes or models, and no specific fault-mode or remaining-useful-life prediction.
-- Not connected to physical machines. No continuous sensor polling. `Product Type` is product category, **not a CNC machine ID**.
-- Maintenance review labels are **heuristics** on top of the fitted risk score; they are not validated service schedules.
-- The official dataset and the offline fallback are **synthetic**. Random row splits and synthetic failure rules do not prove transfer to factory operations. Human inspections and real telemetry would be required for operational use.
-- Fonts are optional web-loaded; the dashboard works with system fonts if offline.
+The project includes automated tests for:
 
-## Troubleshooting
+- Dataset validation
+- Data preprocessing
+- Feature engineering
+- Model predictions
+- CSV input handling
+- Report generation
+- Model training
 
-- **`Python not found`**: install Python 3.10–3.13 with PATH enabled, restart Command Prompt, and run the BAT again.
-- **`pip` or network error**: use a stable internet connection on the first launch; dependencies are not embedded in the ZIP. Remove `.venv/.deps_installed` to force dependency installation if needed.
-- **Port 8501 in use**: close other Streamlit sessions or edit `launcher.py` port and address together.
-- **UCI download unavailable**: this is nonfatal. The included locally simulated data and fitted model work. Retry with `.venv\Scripts\python.exe bootstrap.py --refresh-official` if desired.
-- **Model load error**: `.venv\Scripts\python.exe bootstrap.py --force-train` from the extracted folder.
-- **Stale batch result**: upload the updated file with a different name or rerun after changing its filename.
+Run the tests using:
 
-## Originality / license / GitHub
+```bash
+python -m pip install -r requirements-dev.txt
+python bootstrap.py
+python -m pytest -q
+```
 
-All application implementation here is project-specific and no existing project's repository is copied. The independent simulation is fully defined in code; public AI4I is explicitly cited. Original source code: **MIT** (see LICENSE); optional UCI AI4I CSV: **CC BY 4.0** (see dataset attribution). No secrets, generated history, or virtual environment are intended to be uploaded. [GitHub submission walkthrough](docs/GITHUB_SUBMISSION.md).
+## Limitations
 
-## More documentation
+- The system is designed for simulated CNC-style machining conditions.
+- The model is not validated for a particular CNC manufacturer or equipment model.
+- Failure predictions do not identify confirmed mechanical defects.
+- The application does not predict exact remaining machine lifetime.
+- Maintenance priorities are advisory and should not replace professional inspection.
+- Model performance on simulated data does not establish real industrial accuracy.
+- Continuous IoT sensor monitoring is not implemented.
 
-- [Academic project report](docs/PROJECT_REPORT.md)
-- [Technical architecture](docs/TECHNICAL_DOCUMENTATION.md)
-- [Viva questions and answers](docs/VIVA_QUESTIONS.md)
-- [GitHub instructions](docs/GITHUB_SUBMISSION.md)
-- [Testing and verification](docs/TEST_RESULTS.md)
-- [Quick demonstration script](docs/QUICK_START.md)
+## Future Enhancements
 
-**No GitHub URL is invented.** Create your repository and paste the real URL into the college Excel sheet.
+- Integration with IoT sensors for continuous monitoring
+- Model evaluation on real industrial machine data
+- Time-series analysis of equipment operating conditions
+- Remaining useful life estimation
+- Maintenance scheduling and alert notifications
+- Advanced failure analysis and explainable AI
+- Cloud-based monitoring across multiple machines
+
+## Project Team
+
+**Batch 7 — KL University**
+
+**Course:** AI/ML with Applied Mathematics
+
+| Team Member | Roll Number |
+|---|---|
+| Chundru Yaswanth Sai Kiran | 2601050019 |
+| Bhanu Teja Tiruveedula | 2601150011 |
+| P. Sri Krishna | 2601150099 |
+| Guttikonda Sudheer | 2601050036 |
+
+**Project Supervisor:** Prapulla Kumar Rondla
+
+## References
+
+1. UCI Machine Learning Repository — AI4I 2020 Predictive Maintenance Dataset.
+2. Scikit-learn Documentation — https://scikit-learn.org/
+3. Streamlit Documentation — https://docs.streamlit.io/
+4. Pandas Documentation — https://pandas.pydata.org/
+5. NumPy Documentation — https://numpy.org/
+
+## License
+
+The application code is provided under the MIT License.
+
+The referenced UCI AI4I dataset is separately licensed under Creative Commons Attribution 4.0 International.
