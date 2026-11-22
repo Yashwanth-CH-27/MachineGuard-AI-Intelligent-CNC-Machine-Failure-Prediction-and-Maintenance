@@ -339,8 +339,3 @@ python -m pytest -q
 4. Pandas Documentation — https://pandas.pydata.org/
 5. NumPy Documentation — https://numpy.org/
 
-## License
-
-The application code is provided under the MIT License.
-
-The referenced UCI AI4I dataset is separately licensed under Creative Commons Attribution 4.0 International.
