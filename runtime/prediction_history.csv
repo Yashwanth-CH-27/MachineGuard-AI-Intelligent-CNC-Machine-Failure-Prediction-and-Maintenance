@@ -1,0 +1,2 @@
+Recorded UTC,Mode,Type,Air temperature [K],Process temperature [K],Rotational speed [rpm],Torque [Nm],Tool wear [min],Failure risk score,Predicted failure,Review priority
+2026-11-22T05:21:41+00:00,Manual,L,300.0,310.0,1530,40.0,110,0.003,0,Low

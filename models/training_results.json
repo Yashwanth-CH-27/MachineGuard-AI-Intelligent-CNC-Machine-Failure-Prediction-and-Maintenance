@@ -1,0 +1,105 @@
+{
+  "title": "MachineGuard AI: Intelligent CNC Machine Failure Prediction and Maintenance",
+  "data": {
+    "dataset_kind": "official_uci_synthetic",
+    "rows": 10000,
+    "missing_cells": 0,
+    "duplicate_feature_target_rows": 0,
+    "failure_rows": 339,
+    "failure_rate": 0.0339,
+    "path": "data\\ai4i2020_official.csv"
+  },
+  "environment": {
+    "python": "3.13.2",
+    "scikit_learn": "1.9.1"
+  },
+  "split": {
+    "train": 6000,
+    "validation": 2000,
+    "test": 2000
+  },
+  "validation_comparison": [
+    {
+      "model": "Logistic Regression",
+      "accuracy": 0.9715,
+      "precision": 0.7037,
+      "recall": 0.27941,
+      "f1": 0.4,
+      "roc_auc": 0.91911,
+      "average_precision": 0.43712,
+      "brier_score": 0.02438
+    },
+    {
+      "model": "Decision Tree",
+      "accuracy": 0.9845,
+      "precision": 0.84906,
+      "recall": 0.66176,
+      "f1": 0.7438,
+      "roc_auc": 0.95077,
+      "average_precision": 0.80796,
+      "brier_score": 0.01535
+    },
+    {
+      "model": "Random Forest",
+      "accuracy": 0.9865,
+      "precision": 0.88679,
+      "recall": 0.69118,
+      "f1": 0.77686,
+      "roc_auc": 0.9775,
+      "average_precision": 0.82967,
+      "brier_score": 0.01118
+    }
+  ],
+  "selected_model": "Random Forest",
+  "selection_basis": "highest validation average precision; ROC-AUC tie breaker",
+  "decision_threshold": 0.43,
+  "test_metrics": {
+    "accuracy": 0.9885,
+    "precision": 0.88136,
+    "recall": 0.76471,
+    "f1": 0.8189,
+    "roc_auc": 0.97897,
+    "average_precision": 0.86884,
+    "brier_score": 0.00889,
+    "confusion_matrix": [
+      [
+        1925,
+        7
+      ],
+      [
+        16,
+        52
+      ]
+    ]
+  },
+  "test_positive_count": 68,
+  "validation_permutation_importance": [
+    {
+      "feature": "Torque [Nm]",
+      "mean_drop_in_average_precision": 0.66276
+    },
+    {
+      "feature": "Air temperature [K]",
+      "mean_drop_in_average_precision": 0.34638
+    },
+    {
+      "feature": "Rotational speed [rpm]",
+      "mean_drop_in_average_precision": 0.3196
+    },
+    {
+      "feature": "Process temperature [K]",
+      "mean_drop_in_average_precision": 0.28925
+    },
+    {
+      "feature": "Tool wear [min]",
+      "mean_drop_in_average_precision": 0.28848
+    },
+    {
+      "feature": "Type",
+      "mean_drop_in_average_precision": 0.03834
+    }
+  ],
+  "validation_threshold_is_test_independent": true,
+  "calibration": "3-fold sigmoid calibration fitted on training partition; not proof of deployment reliability",
+  "provenance_note": "Generated simulator data are NOT from UCI unless dataset_kind is official_uci_synthetic"
+}

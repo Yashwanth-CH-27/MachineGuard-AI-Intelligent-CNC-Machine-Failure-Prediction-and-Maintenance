@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+:root { color-scheme: dark; }
+html, body, [data-testid="stApp"] { font-family: 'DM Sans', system-ui, sans-serif; }
+h1,h2,h3,h4 { font-family:'Manrope','DM Sans',sans-serif; letter-spacing:-0.035em; }
+[data-testid="stAppViewContainer"] { background: linear-gradient(130deg,#071523 0%,#101d30 60%,#0b2034 100%); }
+[data-testid="stSidebar"] { background:#0a1725; border-right:1px solid #29374b; }
+[data-testid="stMetric"] { background:#112a3c; border:1px solid #29435a; border-radius:14px; padding:15px; }
+[data-testid="stMetricLabel"] { color:#a9c1d4; }
+[data-testid="stForm"] { border-radius:16px; background:#0e2234; border-color:#244459; padding:20px; }
+[data-testid="stButton"] button[kind="primary"] { background:#1f9bbf; border:none; color:#061924; font-weight:700; }
+[data-testid="stButton"] button[kind="primary"]:hover { background:#45bbd7; }
+.eyebrow { color:#54d4f0; font-size:.73rem; font-weight:800; letter-spacing:.16em; margin-bottom:.2rem; }
+.brand-icon { font-size:2.1rem; margin:.4rem 0; }
+[data-testid="stAlert"] { border-radius:12px; }
+[data-testid="stDataFrame"] { border:1px solid #29435a; border-radius:12px; overflow:hidden; }
+@media(max-width: 800px) { h1 {font-size:2rem!important;} }
